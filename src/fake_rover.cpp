@@ -9,6 +9,7 @@ FakeRover::FakeRover()
    command.rotation = 0;
    command.translation = 0;
    odometry.initUnknown();
+   previousCallOfStep = base::Time::now();
 }
 
 void FakeRover::setMotionCommand(const base::commands::Motion2D &cmd)
@@ -37,6 +38,8 @@ void FakeRover::step(double dt)
     if(dt < 0){
         dt = (now - previousCallOfStep).toSeconds();
     }
+    previousCallOfStep = now;
+
     const double x = odometry.position[0];
     const double y = odometry.position[1];
 
@@ -44,6 +47,9 @@ void FakeRover::step(double dt)
 
     const double x_ = command.translation * cos(f_orientation);
     const double y_ = command.translation * sin(f_orientation);
+
+    cout <<  x_ << "|" << y_ << endl;
+    
     const double f_orientation_ = fmod((f_orientation + command.rotation*M_PI/4.0*dt),2*M_PI);
 
     odometry.position = base::Vector3d(x+x_*dt,y+y_*dt,0.0);
