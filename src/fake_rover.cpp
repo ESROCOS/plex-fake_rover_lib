@@ -29,7 +29,7 @@ base::Vector3d FakeRover::getPosition()
 
 double FakeRover::getOrientation()
 {
-    base::getYaw(odometry.orientation);
+    return base::getYaw(odometry.orientation);
 }
 
 void FakeRover::step(double dt)
@@ -45,10 +45,14 @@ void FakeRover::step(double dt)
 
     const double f_orientation = getOrientation();
 
+  #ifdef DEBUG
+    cout << "[x|y] : [" << x << "|" << y << "]" << endl;
+    cout << "[theta] : " << f_orientation << endl;
+    cout << "[v] : " << command.translation << endl;
+  #endif
+    
     const double x_ = command.translation * cos(f_orientation);
     const double y_ = command.translation * sin(f_orientation);
-
-    cout <<  x_ << "|" << y_ << endl;
     
     const double f_orientation_ = fmod((f_orientation + command.rotation*M_PI/4.0*dt),2*M_PI);
 
